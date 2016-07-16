@@ -16,7 +16,6 @@
 #### C路由页面：
 #### 127.0.0.1:8080/webpack-dev-server/#c
 #### 比如如下js代码：
-<pre>
 import React from 'react'
 import ReactDOM from 'react-dom'
 if (module.hot) {
@@ -54,12 +53,7 @@ var App = React.createClass({
         break;
       default: Child = Home;
     }
-    return(
-      <div>
-        <div>App</div>
-        <Child />
-      </div>
-    )
+    return(<div><div>App</div><Child /></div>)
   }
 }); 
 function render() {
@@ -68,13 +62,11 @@ function render() {
 }
 window.addEventListener('hashchange',render);
 render();
-</pre>
 #### 在hash值改变的时候，App 将会根据this.props.route 值的改变来动态渲染 <Child/> component。
 比如访问页面 127.0.0.1:8080/webpack-dev-server/#a 这个的时候，会渲染A组件的代码；但是如果组件A 有一些内嵌的子组件需要根据 例如 #a/message/:id 或者 #a/unread 等这样的路由规则做动态渲染的时候。我们需要一些更加智能的手段来把路由信息传递给我们的App，这样A组件可以根据URL的映射关系来控制哪些子组件应该需要被渲染。我们的很多组件应该根据URL的规则来做动态渲染。在不使用路由规则的前提下，复杂一点的路由需求就需要我们写很多条件判断的代码去去解决实RL和层级组件的同步问题。为了解决这些情况，我们就引入了react的route；
 ##### 前端路由和后端路由的优缺点？
 ###### 从性能和用户体验的层面来比较的话，后端路由每次访问一个新页面的时候都要向服务器发送请求，然后服务器再响应请求，这个过程肯定会有延迟。而前端路由在访问一个新页面的时候仅仅是变换了一下路径而已，没有了网络延迟，对于用户体验来说会有相当大的提升。
 #### react Route
-<pre>
 import React from 'react'
 import {render} from 'react-dom'
 import { Router, Route, Link,IndexRoute, browserHistory } from 'react-router'
@@ -96,56 +88,27 @@ var B = React.createClass({
 });
 var Home = React.createClass({
   render: function(){
-    return (
-      <div>
-        <div>Home模块已经加载了</div>
-      </div>
-    );
+    return (<div><div>Home模块已经加载了</div></div>);
   }
 });
 var App = React.createClass({
   render: function(){
-    return (
-      <div>
-        <div>App模块已经加载了</div>
-        <div className="App">{this.props.children}</div>
-      </div>
-    );
+    return (<div><div>App模块已经加载了</div><div className="App">{this.props.children}</div></div>);
   }
 });
 var Users = React.createClass({
   render(){
-    return(
-      <div>
-        <div>Users</div>
-        <div className="">
-          <ul>
-            <li>1111</li>
-          </ul>
-        </div>
-        <div className="Users">
-          {this.props.children}
-        </div>
-      </div>
-    )
+    return(<div><div>Users</div><div className=""><ul><li>1111</li></ul></div><div className="Users">{this.props.children}</div></div>)
   }
 });
 var User = React.createClass({
   render() {
-    return (
-      <div>
-        <div>users的子组件</div>
-      </div>
-    )
+    return (<div><div>users的子组件</div></div>)
   }
 });
 var NoMatch = React.createClass({
   render () {
-    return (
-      <div>
-        <div>没有匹配到的内容</div>
-      </div>
-    )
+    return (<div><div>没有匹配到的内容</div></div>)
   }
 });
 render((
@@ -161,21 +124,18 @@ render((
     </Route>
   </Router>
 ),document.getElementById("root"));
-</pre>
 #### 路由配置讲解如下：
-<pre>
-  <Router history = {browserHistory}>
-    <Route path="/" component={App}>
-      <IndexRoute component= {Home} />
-      <Route path="a" component = {A} />
-      <Route path="b" component = {B} />
-      <Route path="users" component={Users}>
-        <Route path="/userId" component={User}/>
-      </Route>
-      <Route path="*" component={NoMatch}/>
+<Router history = {browserHistory}>
+  <Route path="/" component={App}>
+    <IndexRoute component= {Home} />
+    <Route path="a" component = {A} />
+    <Route path="b" component = {B} />
+    <Route path="users" component={Users}>
+      <Route path="/userId" component={User}/>
     </Route>
-  </Router>
-</pre>
+    <Route path="*" component={NoMatch}/>
+  </Route>
+</Router>
 #### 1. 首先用户在浏览器地址栏中访问 http://localhost:8080/webpack-dev-server/ 的根目录的时候，
 就会把App组件和Home组件加载出来，父级组件App需要加上 <div>{this.props.children}</div>，子组件会
 把代码加载到这里面来，path属性可以理解为路径的含义；
