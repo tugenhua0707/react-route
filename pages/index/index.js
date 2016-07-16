@@ -51,6 +51,8 @@ function render() {
 window.addEventListener('hashchange',render);
 render();
 */
+
+/*
 import React from 'react'
 import {render} from 'react-dom'
 import { Router, Route, Link,IndexRoute, browserHistory,hashHistory } from 'react-router'
@@ -134,6 +136,45 @@ render((
         <Route path="/userId" component={User}/>
       </Route>
       <Route path="*" component={NoMatch}/>
+    </Route>
+  </Router>
+),document.getElementById("root"));
+*/
+
+import React from 'react'
+import {render} from 'react-dom'
+import { Router, Route, Link,IndexRoute, browserHistory,hashHistory } from 'react-router'
+
+if (module.hot) {
+  module.hot.accept()
+}
+
+var A = React.createClass({
+  render: function(){
+    return (<Link to="/B">A模块链接到B模块</Link>);
+  }
+});
+
+var B = React.createClass({
+  render: function(){
+    return (<h2>B模块已经加载了</h2>);
+  }
+});
+var App = React.createClass({
+  render: function(){
+    return (
+      <div>
+        <h2>App模块已经加载了</h2>
+        <div className="App">{this.props.children}</div>
+      </div>
+    );
+  }
+});
+render((
+  <Router history = {browserHistory}>
+    <Route path="/" component={App}>
+      <Route path="a/:name" component = {A} />
+      <Route path="b" component = {B} />
     </Route>
   </Router>
 ),document.getElementById("root"));
